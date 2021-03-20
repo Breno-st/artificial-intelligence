@@ -1,0 +1,178 @@
+\documentclass[11pt,a4paper]{report}
+
+\group{...}
+\students{..........}{..........}
+
+\begin{document}
+
+\maketitle
+
+\section{Python AIMA (3 pts)}
+
+\begin{enumerate}
+  \item In order to perform a search, what are the classes that you must define or extend? Explain precisely why and where they are used inside a \textit{tree\_search}. Be concise! (e.g. do not discuss unchanged classes). \textbf{(1 pt)}
+\end{enumerate}
+
+\begin{answer}
+% Your answer here
+\end{answer}
+
+
+
+\begin{enumerate}
+\setcounter{enumi}{1}
+    \item Both \textit{breadth\_first\_graph\_search} and \textit{depth\_first\_graph\_search} are making a call to the same function. How is their fundamental difference implemented (be explicit)? \textbf{(0.5 pt)}
+\end{enumerate}
+
+\begin{answer}
+% Your answer here
+\end{answer}
+
+
+
+\begin{enumerate}
+\setcounter{enumi}{2}
+    \item What is the difference between the implementation of the \textit{graph\_search} and the \textit{tree\_search} methods and how does it impact the search methods? \textbf{(0.5 pt)}
+\end{enumerate}
+
+\begin{answer}
+% Your answer here
+\end{answer}
+
+
+
+\begin{enumerate}
+\setcounter{enumi}{3}
+    \item What kind of structure is used to implement the \textit{closed list}? What properties must thus have the elements that you can
+	put inside the closed list? \textbf{(0.5 pt)}
+\end{enumerate}
+
+\begin{answer}
+% Your answer here
+\end{answer}
+
+
+
+\begin{enumerate}
+\setcounter{enumi}{4}
+    \item How technically can you use the implementation of the closed list to deal with symmetrical states? (hint: if two symmetrical states are considered by the algorithm to be the same, they will not be visited twice) \textbf{(0.5 pt)}
+\end{enumerate}
+
+\begin{answer}
+% Your answer here
+\end{answer}
+
+
+
+
+\section{The Knight's tour Problem (17 pts)}
+
+\begin{enumerate}
+  \item \textbf{Describe} the set of possible actions your agent will consider at each state. Evaluate the branching factor. \textbf{(2 pts)}
+\end{enumerate}
+
+\begin{answer}
+% Your answer here
+\end{answer}
+
+
+
+\begin{enumerate}
+\setcounter{enumi}{1}
+    \item \textbf{Problem analysis.}
+    \begin{enumerate}
+        \item Explain the advantages and weaknesses of the following search strategies \textbf{on this problem} (not in general): depth first, breadth first. Which approach would you choose? \textbf{(2 pts)}
+    \end{enumerate}
+\end{enumerate}
+
+\begin{answer}
+% Your answer here
+\end{answer}
+
+
+
+\begin{enumerate}
+\setcounter{enumi}{1}
+\begin{enumerate}
+\setcounter{enumii}{1}
+    \item What are the advantages and disadvantages of using the tree and graph search \textbf{for this problem}. Which approach would you choose? \textbf{(2 pts)}
+\end{enumerate}
+\end{enumerate}
+
+\begin{answers}[4cm]
+% Your answer here
+\end{answers}
+
+
+
+\begin{enumerate}
+\setcounter{enumi}{2}
+    \item \textbf{Implement} a Knight's tour solver in Python 3.
+			You shall extend the \emph{Problem} class and implement the necessary methods -and other class(es) if necessary- allowing you to test the following four different approaches: 
+			\begin{itemize}
+			\item \textit{depth-first tree-search (DFSt)};
+			\item \textit{breadth-first tree-search (BFSt)};
+			\item \textit{depth-first graph-search (DFSg)};
+			\item \textit{breadth-first graph-search (BFSg)}. 
+			\end{itemize}
+
+    \textbf{Experiments} must be realized (\textit{not yet on INGInious!} use your own computer or one from the computer rooms) with the provided 10 instances. Report in a table the results on the 10 instances for depth-first and breadth-first strategies on both tree and graph search (4 settings above). Run each experiment for a maximum of 3 minutes. You must report the time, the number of explored nodes as well as the number of remaining nodes in the queue to get a solution. \textbf{(4 pts)}
+\end{enumerate}
+
+\begin{answers}[7cm]
+% Your answer here
+\small
+\begin{center}
+\begin{tabular}{||l|l|l|l|l|l|l|l|l|l|l|l|l||}
+\hline
+\multirow{3}{*}{Inst.} & \multicolumn{6}{c|}{BFS} & \multicolumn{6}{c||}{DFS} \\
+\cline{2-13}
+& \multicolumn{3}{c|}{Tree} & \multicolumn{3}{c|}{Graph} & \multicolumn{3}{c|}{Tree} & \multicolumn{3}{c||}{Graph}\\
+\cline{2-13}
+ & T(s) & EN & RNQ & T(s) & EN & RNQ & T(s) & EN & RNQ & T(s) & EN & RNQ\\
+\hline
+i\_01 & & & & & & & & & & & & \\
+\hline
+i\_02 & & & & & & & & & & & & \\
+\hline
+i\_03 & & & & & & & & & & & & \\
+\hline
+i\_04 & & & & & & & & & & & & \\
+\hline
+i\_05 & & & & & & & & & & & & \\
+\hline
+i\_06 & & & & & & & & & & & & \\
+\hline
+i\_07 & & & & & & & & & & & & \\
+\hline
+i\_08 & & & & & & & & & & & & \\
+\hline
+i\_09 & & & & & & & & & & & & \\
+\hline
+i\_10 & & & & & & & & & & & & \\
+\hline
+\end{tabular}
+\end{center}
+\textbf{T}: Time — \textbf{EN}: Explored nodes —
+\textbf{RNQ}: Remaining nodes in the queue
+\end{answers}
+
+
+
+\begin{enumerate}
+\setcounter{enumi}{3}
+    \item \textbf{Submit} your program (encoded in \textbf{utf-8}) on INGInious. According to your experimentations, it must use the algorithm that leads to the best results. Your program must take as inputs the four number previously described separated by space character, and print to the standard output a solution to the problem satisfying the format described in Figure 3. Under INGInious (only 45s timeout per instance!), we expect you to solve at least 12 out of the 15 ones. \textbf{(6 pts)}
+\end{enumerate}
+
+\begin{enumerate}
+\setcounter{enumi}{4}
+    \item \textbf{Conclusion.} Do you see any improvement directions for the best algorithm you chose? (Note that since we're still in uninformed search, \textit{we're not talking about informed heuristics}). \textbf{(1 pt)}
+\end{enumerate}
+
+\begin{answer}
+% Your answer here
+\end{answer}
+
+
+
+\end{document}

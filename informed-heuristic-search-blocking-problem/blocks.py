@@ -1,6 +1,6 @@
 # -*-coding: utf-8 -*
-from search import *
 import sys
+from search import *
 import time
 import copy
 from collections import Counter
@@ -12,26 +12,30 @@ from collections import Counter
 class Blocks(Problem):
 
     def successor(self, state):
+        print("Node")
+        print(state.__str__())
         successors = self.get_successors(state)
-        # if len(successors) < 8:
-        #     print(len(successors))
-        #     print('checked')
+        # print('Number of successors:', len(successors))
 
-        for successor in successors:
+        for i, successor in enumerate(successors):
+
+            # print('child:', i+1)
+            # print(State(successor))
             yield (successor, State(successor))
-
 
     def goal_test(self, state):
         'verify is all goal_grid letters are @ in current_grid'
         count = 0
+
         for l in state.grid:
             for i in l:
                 if i == '@':
                     count += 1
-        letters = self.get_grid_positions(state.grid)
-        return count == len(letters[0])
+
+        letters, unmovable = self.get_grid_positions(self.goal.grid)
 
 
+        return count == len(letters)
 
     def path_cost(self, c, state1, action, state2):
         #return c + abs(state1[0] - pos2[0]) + abs(pos1[1] - pos2[1])
@@ -67,10 +71,7 @@ class Blocks(Problem):
         grid = state.grid
         goal_grid = (self.goal).grid
         moves = [(0, 1), (0, -1)]
-        # print('node')
-        # print(state)
         for letter, row, col in letters: #[[a,2,4,], [a,4,4,], [b,3,4]]
-            # print(letters)
             for i,j in moves:
                 temp_grid = copy.deepcopy(grid)
                 if (0 <= col+j < state.nbc) and (grid[row+i][col+j] == ' '):
@@ -87,8 +88,6 @@ class Blocks(Problem):
                     if self.dead_lock(goal_grid, letter, row + i , col+j, temp_grid):  # aux method 4
                         next
                     else:
-                        # print('child')
-                        # print(State(temp_grid))
                         n_grids.append(temp_grid)
         return n_grids
 
@@ -109,18 +108,21 @@ class Blocks(Problem):
                 target, t_row, t_col = target_letters[i] # [[A,5,4,],[B,3,4]]
                 current, c_row, c_col = current_letters[j] # [[a,2,4,], [a,4,4,], [b,3,4]]
                 if current.upper() == target:
-                    if c_row > t_row:  # current abaixo do target
+                    if c_row > t_row:  # current below do target
                         n_letter[current] -= 1
-                    elif c_row == t_row:
-                        if c_col < t_col:
-                            l, r = c_col, t_col
+                    elif c_row == t_row: # same level as target, but different column
+                        if c_col >= t_col:
+                            l = t_col
+                            r = c_col
                         else:
-                            l, r = t_col, c_col
+                            r = t_col
+                            l = c_col
                         for x in range(l+1, r):
                             if goal_grid[c_row][x] != " ":
                                 n_letter[current] -= 1
+
         for k in n_target.keys():
-            if n_letter[k.lower()] == 0:
+            if n_letter[k.lower()] < 0:
                 # print('Deadlock')
                 # print(State(temp_grid))
                 return True
@@ -188,9 +190,9 @@ class State:
         # embedding goal into state
         self.goal = grid
 
+
     def __eq__(self, state2):
         return self.grid == state2.grid
-
 
 
     def __hash__(self):
@@ -209,21 +211,37 @@ def readInstanceFile(filename):
 def heuristic(node):
 
     grid = node.state.grid
+    print(node.state.__str__())
     goal_grid = (goal_state).grid
+    # fix current
+    current = get_blocks(grid) # list if block position ['block', x,y] !!! use strcuture to compare letter current and target
 
-    current = get_blocks(grid)
+
     h = 0
     for row in range(len(goal_grid)):
         for col in range(len(goal_grid[0])):
             penalty = 0
-            if grid[row][col] != '@' and goal_grid[row][col] == '#' and goal_grid[row][col] == ' ':
+            if grid[row][col] != '@' and goal_grid[row][col] != '#' and goal_grid[row][col] != ' ':
                 h = h + 15
-                penalty = 1e5 #penalize cases when target is above the current position
-            for letter, c_row, c_col in current:
-                if grid[c_row][c_col].upper() == goal_grid[row][col] and c_row <= row:
-                    penalty = abs(row - c_row,) + abs(col - c_col)
+                # initialize a high penalization
+                for letter, c_row, c_col in current:
+                    # number of target for a given letter B
+                    # how many box for a given letter not lower than the target
+                    !!!
+
+                    if grid[c_row][c_col].upper() == goal_grid[row][col]:
+                        if c_row <= row:
+                        # reset penalization to manhattan case current rown(crow) is not above target
+                            penalty = penalty + abs(row - c_row,) + abs(col - c_col)
+                        else:
+                            penalty = 1e5
+
+
             h = h + penalty
 
+    print(node.state.__str__())
+    print(goal_state)
+    print('Evaluations',h)
     return h
 
 def get_blocks(grid):
@@ -231,11 +249,11 @@ def get_blocks(grid):
     unmovable = [' ', '#', '@']
     # get letters current position
     letters = []
-    for row, cols in enumerate(grid):
-        for letter in cols:
-            if letter not in unmovable:
-                col = cols.index(letter)
-                letters.append([letter, row, col])
+    for idRow, row in enumerate(grid):
+        for idCol,value in enumerate(row):
+            if value not in unmovable:
+                col = row.index(value)
+                letters.append([value, idRow, idCol])
     return letters
 
 
@@ -245,8 +263,9 @@ def get_blocks(grid):
 ##############################
 #Use this block to test your code in local
 # Comment it and uncomment the next one if you want to submit your code on INGInious
-instances_path = "/mnt/c/Users/b_tib/coding/Msc/oLINGI2261/Assignements/informed-heuristic-search-BlockingProblem/instances/"
-instance_names = ['a01','a02','a03','a04', 'a05', 'a06', 'a07','a08','a09','a10','a11'] #
+instances_path = "/mnt/c/Users/b_tib/coding/Msc/oLINGI2261/Assignements/artificial-intelligence/informed-heuristic-search-Blocking-Problem/instances/"
+
+instance_names = ['a04', 'a05', 'a06', 'a07','a08','a09','a10','a11'] #
 
 for instance in [instances_path + name for name in instance_names]:
     grid_init, grid_goal = readInstanceFile(instance)

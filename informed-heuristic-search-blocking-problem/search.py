@@ -120,6 +120,7 @@ def graph_search(problem, fringe):
     If two paths reach a state, only use the best one. [Fig. 3.18]"""
     closed = {}
     fringe.append(Node(problem.initial))
+
     exploredNodes = 0
     while fringe:
         node = fringe.pop()

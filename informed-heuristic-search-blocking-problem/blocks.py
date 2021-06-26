@@ -211,7 +211,6 @@ def readInstanceFile(filename):
 def heuristic(node):
 
     grid = node.state.grid
-    print(node.state.__str__())
     goal_grid = (goal_state).grid
     # fix current
     current = get_blocks(grid) # list if block position ['block', x,y] !!! use strcuture to compare letter current and target
@@ -221,27 +220,33 @@ def heuristic(node):
     for row in range(len(goal_grid)):
         for col in range(len(goal_grid[0])):
             penalty = 0
-            if grid[row][col] != '@' and goal_grid[row][col] != '#' and goal_grid[row][col] != ' ':
+            # check if blocks in the goal state are @ in the current
+            if grid[row][col] != '@' and (goal_grid[row][col] != '#' and goal_grid[row][col] != ' '):
                 h = h + 15
-                # initialize a high penalization
+
+                count_above =0
                 for letter, c_row, c_col in current:
                     # number of target for a given letter B
-                    # how many box for a given letter not lower than the target
-                    !!!
+                    # how many box for a given letter not lower than the target!!!
 
-                    if grid[c_row][c_col].upper() == goal_grid[row][col]:
+                    # check if the destination is for the letter
+
+                    if goal_grid[row][col] == grid[c_row][c_col].upper():
+                        # at least one same letter on top
+                        # if the current letter position is above the target letter position
                         if c_row <= row:
-                        # reset penalization to manhattan case current rown(crow) is not above target
-                            penalty = penalty + abs(row - c_row,) + abs(col - c_col)
-                        else:
-                            penalty = 1e5
+                            count_above +=1
 
+                if count_above >= 1:
+                    penalty = penalty + abs(row - c_row,) + abs(col - c_col)
+                else:
+                    penalty = 1e5
 
             h = h + penalty
 
     print(node.state.__str__())
-    print(goal_state)
     print('Evaluations',h)
+    print(goal_state)
     return h
 
 def get_blocks(grid):
@@ -265,7 +270,7 @@ def get_blocks(grid):
 # Comment it and uncomment the next one if you want to submit your code on INGInious
 instances_path = "/mnt/c/Users/b_tib/coding/Msc/oLINGI2261/Assignements/artificial-intelligence/informed-heuristic-search-Blocking-Problem/instances/"
 
-instance_names = ['a04', 'a05', 'a06', 'a07','a08','a09','a10','a11'] #
+instance_names = [ 'a06', 'a07','a08','a09','a10','a11'] #
 
 for instance in [instances_path + name for name in instance_names]:
     grid_init, grid_goal = readInstanceFile(instance)
